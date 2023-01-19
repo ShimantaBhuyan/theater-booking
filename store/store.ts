@@ -1,13 +1,25 @@
+import { getSeatLayout } from "utils/getSeatLayout";
 import { create } from "zustand";
 
 interface SelectionStore {
   seats: Seat[];
   selectedSeats: string[];
+  cinemaLayout: CinemaLayout;
   setSeats: (seats: Seat[]) => void;
   toggleSeat: (seatId: string) => void;
   bookSeat: (seatId: string) => void;
-  getSeats: () => Seat[];
-  getSelectedSeats: () => string[];
+  // getSeats: () => Seat[];
+  // getSelectedSeats: () => string[];
+}
+
+export interface CinemaLayout {
+  rows: Row[];
+}
+
+interface Row {
+  id: string;
+  numCols: number;
+  price: number;
 }
 
 export interface Seat {
@@ -15,27 +27,19 @@ export interface Seat {
   status: "available" | "selected" | "booked" | "reserved" | "disabled";
 }
 
-export const dummyLayout: Seat[] = [
-  { id: "S-1-1", status: "booked" },
-  { id: "S-1-2", status: "reserved" },
-  { id: "S-1-3", status: "disabled" },
-  { id: "S-1-4", status: "available" },
-  { id: "S-1-5", status: "available" },
-  { id: "S-2-1", status: "booked" },
-  { id: "S-2-2", status: "reserved" },
-  { id: "S-2-3", status: "disabled" },
-  { id: "S-2-4", status: "available" },
-  { id: "S-2-5", status: "available" },
-  { id: "S-3-1", status: "booked" },
-  { id: "S-3-2", status: "reserved" },
-  { id: "S-3-3", status: "disabled" },
-  { id: "S-3-4", status: "available" },
-  { id: "S-3-5", status: "available" },
-];
+export const dummyCinemaLayout = {
+  rows: [
+    { id: "1", numCols: 6, price: 15 },
+    { id: "2", numCols: 10, price: 20 },
+    { id: "3", numCols: 8, price: 18 },
+    { id: "4", numCols: 10, price: 12 },
+  ],
+};
 
 export const useSeatStore = create<SelectionStore>((set, get) => ({
   seats: [],
   selectedSeats: [],
+  cinemaLayout: dummyCinemaLayout,
   setSeats: seats => set(state => ({ seats })),
   toggleSeat: seatId => {
     set(state => {
@@ -63,10 +67,13 @@ export const useSeatStore = create<SelectionStore>((set, get) => ({
       return { ...state, seats, selectedSeats: state.selectedSeats.filter(id => id !== seatId) };
     });
   },
-  getSeats: () => {
-    return get().seats;
+  setCinemaLayout: (cinemaLayout: CinemaLayout) => {
+    set(state => ({ ...state, cinemaLayout }));
   },
-  getSelectedSeats: () => {
-    return get().selectedSeats;
-  },
+  // getSeats: () => {
+  //   return get().seats;
+  // },
+  // getSelectedSeats: () => {
+  //   return get().selectedSeats;
+  // },
 }));

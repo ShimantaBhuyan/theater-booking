@@ -1,10 +1,8 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@styles/Home.module.css";
 
-import SeatSelection from "@components/SeatLayout";
-import { SeatLegend } from "@components/SeatLegend";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +15,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
+      <div className="flex flex-col justify-center items-center">
         {/* <div className={styles.description}>
           <p>
             Get started by editing&nbsp;
@@ -44,8 +42,9 @@ export default function Home() {
 
         <div className="flex flex-col justify-center items-center gap-10">
           <h1 className="text-3xl">Cinema Booking App</h1>
-          <SeatLegend />
-          <SeatSelection />
+          <Link href="/book" className="px-4 py-2 flex justify-center items-center text-md border-2 rounded-md">
+            Book Tickets
+          </Link>
         </div>
 
         {/* <div className={styles.grid}>
@@ -106,7 +105,7 @@ export default function Home() {
             </p>
           </a>
         </div> */}
-      </main>
+      </div>
     </>
   );
 }

@@ -20,8 +20,6 @@ export const Seat: React.FC<SeatProps> = ({ id, status, onClick }) => {
         return "fill-green-300";
       case "selected":
         return "fill-purple-300";
-      default:
-        return "fill-purple-300";
     }
   };
 
@@ -33,7 +31,7 @@ export const Seat: React.FC<SeatProps> = ({ id, status, onClick }) => {
       onClick={onClick}
       data-seat-id={id}
     >
-      <SeatIcon className={`h-12 w-12 ${fillColor()}`} />
+      <SeatIcon className={`h-6 w-6 sm:h-12 sm:w-12 ${fillColor()}`} />
     </div>
   );
 };
