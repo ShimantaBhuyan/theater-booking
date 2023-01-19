@@ -1,4 +1,3 @@
-import { getSeatLayout } from "utils/getSeatLayout";
 import { create } from "zustand";
 
 interface SelectionStore {
