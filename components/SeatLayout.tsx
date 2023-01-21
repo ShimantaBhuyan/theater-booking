@@ -6,6 +6,7 @@ import { getSeatLayout } from "utils/getSeatLayout";
 const SeatLayout: React.FC = () => {
   const { cinemaLayout, toggleSeat, seats } = useSeatStore();
   const [rows, setRows] = useState<{ [rowId: string]: SeatProps[] }>({});
+  const [seatPrices, setSeatPrices] = useState<string[]>([]);
 
   console.log({ cinemaLayout, seats });
 
@@ -22,14 +23,23 @@ const SeatLayout: React.FC = () => {
     setRows(cinemaSeatData);
   }, [seats]);
 
+  useEffect(() => {
+    if (cinemaLayout.rows.length > 0) {
+      let prices = cinemaLayout.rows.map(rowData => rowData.price.toString());
+      setSeatPrices(prices);
+    }
+  }, [cinemaLayout]);
+
   return (
     <div className="flex justify-center items-center">
       <div className="flex flex-col">
-        {cinemaLayout.rows.map(rowData => (
-          <p key={`row-${rowData.id}-pricing`} className="h-6 sm:h-12 flex items-center">
-            &#8377;{rowData.price}
-          </p>
-        ))}
+        {seatPrices.length > 0
+          ? seatPrices.map((price, index) => (
+              <p key={`row-${index + 1}-pricing`} className="h-6 sm:h-12 flex items-center">
+                &#8377;{price}
+              </p>
+            ))
+          : null}
       </div>
       <div className="flex justify-center items-center flex-wrap sm:w-[75%]">
         {Object.values(rows).length > 0
