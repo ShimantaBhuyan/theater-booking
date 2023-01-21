@@ -6,11 +6,11 @@ export const SeatLegend: React.FC = () => {
   const fillColor = (status: string) => {
     switch (status) {
       case "booked":
-        return "fill-purple-700";
+        return "fill-purple-600";
       case "reserved":
         return "fill-gray-400";
       case "disabled":
-        return "fill-gray-600";
+        return "fill-gray-800";
       case "available":
         return "fill-green-300";
       case "selected":
@@ -29,9 +29,9 @@ export const SeatLegend: React.FC = () => {
       case "disabled":
         return "This seat is disabled";
       case "available":
-        return "Click to select this seat";
+        return "This seat is available";
       case "selected":
-        return "Click to deselect this seat";
+        return "This seat is currently selected by you";
       default:
         return "This is a seat";
     }
@@ -59,8 +59,8 @@ export const SeatLegend: React.FC = () => {
             key={seat.id}
           >
             <SeatIcon className={`h-12 w-12 ${fillColor(seat.status)}`} />
-            <div className="absolute bottom-0 flex flex-col items-center hidden mb-6 group-hover:flex">
-              <span className="relative min-w-[100px] z-10 p-2 text-xs leading-none text-gray-800 whitespace-no-wrap bg-gray-200 shadow-lg">
+            <div className="absolute bottom-0 flex flex-col items-center hidden mb-6 group-hover:flex rounded-md">
+              <span className="relative min-w-[100px] z-10 p-2 text-xs leading-none text-gray-800 whitespace-no-wrap bg-gray-200 drop-shadow-2xl rounded-md">
                 {getTooltip(seat.status)}
               </span>
               <div className="w-3 h-3 -mt-2 rotate-45 bg-gray-200"></div>

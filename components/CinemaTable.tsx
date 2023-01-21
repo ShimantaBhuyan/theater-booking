@@ -63,7 +63,10 @@ export default function CinemaTable({
   return (
     <div className="relative flex flex-col justify-center items-center overflow-x-auto gap-5 sm:min-w-[632px]">
       <div className="flex justify-around items-center w-full">
-        <button onClick={handleClick} className="px-3 py-1 bg-gray-700 rounded-md">
+        <button
+          onClick={handleClick}
+          className="px-3 py-1 bg-gray-700 rounded-md text-sm text-gray-300 dark:text-gray-300 drop-shadow-lg"
+        >
           Add Row
         </button>
         {items.length > 0 ? (

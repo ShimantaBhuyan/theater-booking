@@ -69,12 +69,12 @@ export const Admin = () => {
           <h2 className="text-md">Current layout</h2>
           <SeatLayout />
           <div className="flex flex-col justify-center items-center gap-5 w-[200px] mt-5">
-            <label className="block text-sm font-medium text-gray-900 dark:text-white w-full">
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-500 w-full">
               Seat Status:
               <select
                 value={status}
                 onChange={handleStatusChange}
-                className="mt-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="mt-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-300 dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option selected>Chose selected status</option>
                 <option value="reserved">Reserved</option>
@@ -82,10 +82,18 @@ export const Admin = () => {
               </select>
             </label>
 
-            <button type="button" onClick={handleUpdate} className="px-4 py-2 bg-gray-700 rounded-md w-full">
+            <button
+              type="button"
+              onClick={handleUpdate}
+              className="px-4 py-2 bg-gray-700 rounded-md w-full text-gray-300 dark:text-gray-300 drop-shadow-lg"
+            >
               Update Selected Seats
             </button>
-            <button type="submit" className="px-4 py-2 bg-gray-700 rounded-md w-full" onClick={handleSubmit}>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-gray-700 rounded-md w-full text-gray-300 dark:text-gray-300 drop-shadow-lg"
+              onClick={handleSubmit}
+            >
               Submit
             </button>
           </div>

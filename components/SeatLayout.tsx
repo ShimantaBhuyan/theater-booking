@@ -4,26 +4,10 @@ import { useSeatStore, dummyCinemaLayout, Seat as SeatProps } from "@store/store
 import { getSeatLayout } from "utils/getSeatLayout";
 
 const SeatLayout: React.FC = () => {
-  const { setCinemaLayout, cinemaLayout, toggleSeat, seats, setSeats } = useSeatStore();
+  const { cinemaLayout, toggleSeat, seats } = useSeatStore();
   const [rows, setRows] = useState<{ [rowId: string]: SeatProps[] }>({});
 
   console.log({ cinemaLayout, seats });
-
-  // useEffect(() => {
-  //   console.log("SEAT LAYOUT USE EFFECT INITIAL");
-  //   if (cinemaLayout.rows.length === 0) {
-  //     console.log("SEAT LAYOUT USE EFFECT INITIAL INSIDE IF");
-  //     setCinemaLayout(dummyCinemaLayout);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("SEAT LAYOUT USE EFFECT");
-  //   if (cinemaLayout.rows.length > 0) {
-  //     console.log("SEAT LAYOUT USE EFFECT INSIDE IF");
-  //     setSeats(getSeatLayout(cinemaLayout));
-  //   }
-  // }, [cinemaLayout]);
 
   useEffect(() => {
     let cinemaSeatData = seats.reduce((rows: { [rowId: string]: SeatProps[] }, seat) => {
