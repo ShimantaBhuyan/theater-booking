@@ -3,10 +3,36 @@ import { Inter } from "@next/font/google";
 import styles from "@styles/Home.module.css";
 
 import Link from "next/link";
+import { useEffect } from "react";
+import { Seat, useSeatStore } from "@store/store";
+import { SBClient } from "../../utils/SBClient";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const { setCinemaLayout, setSeats } = useSeatStore();
+  const supabase = SBClient.getInstance();
+
+  useEffect(() => {
+    const getDBValues = async () => {
+      const rowsData = await supabase.fetchRows();
+      const seatsData = await supabase.fetchSeats();
+      console.log({ rowsData, seatsData });
+      if (rowsData.success) {
+        setCinemaLayout({ rows: rowsData.data?.data as Array<{ id: string; numCols: number; price: number }> });
+      } else {
+        console.log("Failed to load cinema layout...");
+      }
+      if (seatsData.success) {
+        setSeats(seatsData.data?.data as Seat[]);
+      } else {
+        console.log("Failed to load seats for cinema...");
+      }
+    };
+    // if (seats && seats.length === 0) getDBValues();
+    getDBValues();
+  }, []);
+
   return (
     <>
       <Head>
@@ -44,6 +70,9 @@ export default function Home() {
           <h1 className="text-3xl">Cinema Booking App</h1>
           <Link href="/book" className="px-4 py-2 flex justify-center items-center text-md border-2 rounded-md">
             Book Tickets
+          </Link>
+          <Link href="/admin" className="px-4 py-2 flex justify-center items-center text-md border-2 rounded-md">
+            Admin
           </Link>
         </div>
 

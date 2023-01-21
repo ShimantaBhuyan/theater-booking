@@ -1,16 +1,20 @@
 import { CinemaLayout, Seat } from "@store/store";
 
-export const getSeatLayout = (layout: CinemaLayout) => {
+export const getSeatLayout = (layout: CinemaLayout, initial?: boolean) => {
   const getRandomStatus = () => {
-    const random = Math.floor(Math.random() * 4 + 1);
-    if (random === 1) {
+    if (initial != undefined && initial) {
       return "available";
-    } else if (random === 2) {
-      return "booked";
-    } else if (random === 3) {
-      return "reserved";
     } else {
-      return "disabled";
+      const random = Math.floor(Math.random() * 4 + 1);
+      if (random === 1) {
+        return "available";
+      } else if (random === 2) {
+        return "booked";
+      } else if (random === 3) {
+        return "reserved";
+      } else {
+        return "disabled";
+      }
     }
   };
 
