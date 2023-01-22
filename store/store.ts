@@ -9,12 +9,9 @@ interface SelectionStore {
   setSeats: (seats: Seat[]) => void;
   toggleSeat: (seatId: string) => void;
   bookSeat: (seatId: string) => void;
-  // makeAvailable: (seatId: string[]) => void;
   reserveSeats: (seatId: string[]) => void;
   disableSeats: (seatId: string[]) => void;
   setCinemaLayout: (layout: CinemaLayout) => void;
-  // getSeats: () => Seat[];
-  // getSelectedSeats: () => string[];
 }
 
 export interface CinemaLayout {
@@ -65,7 +62,12 @@ export const useSeatStore = create<SelectionStore>()(
       },
       deselectAll: () => {
         set(state => {
-          return { ...state, selectedSeats: [] };
+          const seats = [...state.seats];
+          state.selectedSeats.map(id => {
+            let selectedSeat = seats.find(seat => seat.id === id);
+            if (selectedSeat) selectedSeat.status = "available";
+          });
+          return { ...state, seats, selectedSeats: [] };
         });
       },
       bookSeat: seatId => {
@@ -79,16 +81,6 @@ export const useSeatStore = create<SelectionStore>()(
           return { ...state, seats, selectedSeats: state.selectedSeats.filter(id => id !== seatId) };
         });
       },
-      // makeAvailable: seatIds => {
-      //   set(state => {
-      //     let seats = [...state.seats];
-      //     const selectedSeats = seatIds.map((seatId: string) => seats.find(seat => seat.id === seatId)) as Seat[];
-      //     if (!selectedSeats.length) return state;
-      //     selectedSeats.forEach(seat => seat != undefined && (seat.status = "available"));
-      //     seats = [...state.seats, ...selectedSeats];
-      //     return { ...state, seats };
-      //   });
-      // },
       reserveSeats: seatIds => {
         set(state => {
           let seats = [...state.seats];
@@ -112,12 +104,6 @@ export const useSeatStore = create<SelectionStore>()(
       setCinemaLayout: (cinemaLayout: CinemaLayout) => {
         set(state => ({ ...state, cinemaLayout }));
       },
-      // getSeats: () => {
-      //   return get().seats;
-      // },
-      // getSelectedSeats: () => {
-      //   return get().selectedSeats;
-      // },
     }),
     {
       name: "cinema-booking-storage", // name of the item in the storage (must be unique)

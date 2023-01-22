@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { getSeatPrice } from "utils/getSeatPrice";
 
 export const BookingSummary = () => {
-  const { cinemaLayout, selectedSeats } = useSeatStore();
+  const { cinemaLayout } = useSeatStore();
+  const selectedSeats = useSeatStore(state => state.selectedSeats);
 
   const [bookedSeats, setBookedSeats] = useState<string[][]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
@@ -14,7 +15,7 @@ export const BookingSummary = () => {
     const totalPrice = prices.reduce((total, item) => total + parseInt(item[1]), 0);
     setTotalAmount(totalPrice);
     console.log({ selectedSeats, prices, totalPrice });
-  }, [selectedSeats]);
+  }, [selectedSeats.length]);
 
   return (
     <div className="flex flex-col justify-center items-center gap-2">
