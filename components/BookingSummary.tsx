@@ -14,11 +14,10 @@ export const BookingSummary = () => {
     setBookedSeats(prices);
     const totalPrice = prices.reduce((total, item) => total + parseInt(item[1]), 0);
     setTotalAmount(totalPrice);
-    console.log({ selectedSeats, prices, totalPrice });
   }, [selectedSeats.length]);
 
   return (
-    <div className="flex flex-col justify-center items-center gap-2">
+    <div className="flex flex-col justify-center items-center gap-2 w-full">
       <p className="text-lg font-medium border-b-2">Selected Seats</p>
       {bookedSeats.length > 0
         ? bookedSeats.map(seat => {

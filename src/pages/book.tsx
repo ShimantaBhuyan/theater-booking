@@ -14,17 +14,13 @@ const BookScreen = () => {
   const { deselectAll } = useSeatStore();
 
   useEffect(() => {
-    console.log({ isRunning, timeLeft });
     if (timeLeft <= 0) {
-      console.log("DESELECTING ALL...");
       deselectAll();
     }
   }, [timeLeft]);
 
   useEffect(() => {
-    console.log("SELECTED SEATS INSIDE BOOK PAGE USE EFFECT: ", { selectedSeats });
     if (selectedSeats.length === 0) {
-      console.log("STOPPING TIMER...");
       stop();
     }
   }, [selectedSeats.length]);

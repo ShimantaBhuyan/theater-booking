@@ -17,7 +17,7 @@ export default function Home() {
     const getDBValues = async () => {
       const rowsData = await supabase.fetchRows();
       const seatsData = await supabase.fetchSeats();
-      console.log({ rowsData, seatsData });
+      // TODO: Toasts
       if (rowsData.success) {
         setCinemaLayout({ rows: rowsData.data?.data as Array<{ id: string; numCols: number; price: number }> });
       } else {

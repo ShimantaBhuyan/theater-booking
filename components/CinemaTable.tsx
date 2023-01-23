@@ -72,7 +72,6 @@ export default function CinemaTable({
         {items.length > 0 ? (
           <button
             onClick={() => {
-              console.log({ items });
               getValues(items);
             }}
             className="px-3 py-1 bg-gray-700 rounded-md"

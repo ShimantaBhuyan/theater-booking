@@ -8,8 +8,6 @@ const SeatLayout: React.FC = () => {
   const [rows, setRows] = useState<{ [rowId: string]: SeatProps[] }>({});
   const [seatPrices, setSeatPrices] = useState<string[]>([]);
 
-  console.log({ cinemaLayout, seats });
-
   useEffect(() => {
     let cinemaSeatData = seats.reduce((rows: { [rowId: string]: SeatProps[] }, seat) => {
       const [, rowId] = seat.id.split("-");
@@ -31,17 +29,17 @@ const SeatLayout: React.FC = () => {
   }, [cinemaLayout]);
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center min-w-[300px]">
       <div className="flex flex-col">
         {seatPrices.length > 0
           ? seatPrices.map((price, index) => (
-              <p key={`row-${index + 1}-pricing`} className="h-6 sm:h-12 flex items-center">
+              <p key={`row-${index + 1}-pricing`} className="h-6 sm:h-12 flex items-center text-sm sm:text-md">
                 &#8377;{price}
               </p>
             ))
           : null}
       </div>
-      <div className="flex justify-center items-center flex-wrap sm:w-[75%]">
+      <div className="flex justify-center items-center flex-wrap w-full sm:w-[75%]">
         {Object.values(rows).length > 0
           ? Object.values(rows).map((cinemaSeat, index) => {
               return (

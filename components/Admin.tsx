@@ -14,8 +14,7 @@ export const Admin = () => {
   const supabase = SBClient.getInstance();
 
   const handleSubmit = async () => {
-    //   TODO: CALL DB FUNC HERE
-    console.log("UPDATED CINEMA LAYOUT: ", cinemaLayout, seats);
+    // TODO: Toast messages
     const insertLayoutResult = await supabase.upsert("rows", cinemaLayout.rows);
     const insertSeatsResult = await supabase.upsert("seat", seats);
     if (insertLayoutResult.status) {
@@ -44,14 +43,11 @@ export const Admin = () => {
   };
 
   const generateCinema = (rows: Array<{ id: string; numCols: number; price: number }>) => {
-    console.log({ rows });
     setCinemaLayout({ rows });
   };
 
   useEffect(() => {
-    console.log("IN ADMIN: ", { cinemaLayout, seats });
     if (cinemaLayout.rows.length > 0 && seats.length < 0) {
-      console.log("IN ADMIN INSIDE IF");
       setSeats(getSeatLayout(cinemaLayout, true));
     }
   }, [cinemaLayout, seats]);
