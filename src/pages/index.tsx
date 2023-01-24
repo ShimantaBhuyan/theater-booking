@@ -10,29 +10,6 @@ import { SBClient } from "../../utils/SBClient";
 // const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const { setCinemaLayout, setSeats } = useSeatStore();
-  const supabase = SBClient.getInstance();
-
-  useEffect(() => {
-    const getDBValues = async () => {
-      const rowsData = await supabase.fetchRows();
-      const seatsData = await supabase.fetchSeats();
-      // TODO: Toasts
-      if (rowsData.success) {
-        setCinemaLayout({ rows: rowsData.data?.data as Array<{ id: string; numCols: number; price: number }> });
-      } else {
-        console.log("Failed to load cinema layout...");
-      }
-      if (seatsData.success) {
-        setSeats(seatsData.data?.data as Seat[]);
-      } else {
-        console.log("Failed to load seats for cinema...");
-      }
-    };
-    // if (seats && seats.length === 0) getDBValues();
-    getDBValues();
-  }, []);
-
   return (
     <>
       <Head>

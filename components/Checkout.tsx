@@ -3,12 +3,16 @@ import { Timer } from "@components/Timer";
 import { useSeatStore } from "@store/store";
 import Link from "next/link";
 import { useEffect } from "react";
+import { SBClient } from "utils/SBClient";
 import useSessionTimer from "utils/useTimer";
 
 const Checkout = () => {
-  const { deselectAll } = useSeatStore();
+  const supabase = SBClient.getInstance();
+  const { deselectAll, bookSeat } = useSeatStore();
   const selectedSeats = useSeatStore(state => state.selectedSeats);
   const { start, isRunning, timeLeft } = useSessionTimer();
+
+  let realtimeSeats = supabase.getRealtimeSeats();
 
   useEffect(() => {
     if (!isRunning && selectedSeats.length > 0) {
@@ -17,15 +21,38 @@ const Checkout = () => {
   }, []);
 
   useEffect(() => {
+    if (realtimeSeats != undefined && selectedSeats.some(seat => seat === realtimeSeats.id)) {
+      // TODO: Toast message
+      bookSeat(realtimeSeats.id);
+      deselectAll();
+      stop();
+      alert("One or more of your selected seats has been booked! Chose other seats and try again.");
+    }
+  }, [realtimeSeats]);
+
+  useEffect(() => {
     if (timeLeft === 0 && selectedSeats.length > 0) {
       deselectAll();
       stop();
     }
   }, [timeLeft, selectedSeats]);
 
-  const bookSeats = () => {
-    //   TODO: Call DB func to update booked seats
-    console.log("BOOKING SEATS...");
+  const bookSeats = async () => {
+    //   TODO: Call DB func to update booked seats, Toasts
+    const bookedSeats = selectedSeats.map(id => {
+      bookSeat(id);
+      return { id, status: "booked" };
+    });
+    const bookSeatsResult = await supabase.upsert("seat", bookedSeats);
+    if (bookSeatsResult.success) {
+      alert("SEATS BOOKED SUCCESSFULLY");
+    } else {
+      alert("SEAT BOOKING FAILED");
+    }
+    deselectAll();
+    stop();
+    // TODO: Show booking confirmation toast
+    alert("Your seats have been booked successfully!");
   };
 
   return (

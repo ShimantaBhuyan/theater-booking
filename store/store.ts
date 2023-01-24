@@ -5,7 +5,7 @@ interface SelectionStore {
   seats: Seat[];
   selectedSeats: string[];
   cinemaLayout: CinemaLayout;
-  deselectAll: () => void;
+  deselectAll: (removeSelectedOnly?: boolean) => void;
   setSeats: (seats: Seat[]) => void;
   toggleSeat: (seatId: string) => void;
   bookSeat: (seatId: string) => void;
@@ -60,14 +60,18 @@ export const useSeatStore = create<SelectionStore>()(
           return { ...state, seats, selectedSeats: state.selectedSeats };
         });
       },
-      deselectAll: () => {
+      deselectAll: (removeSelectedOnly?: boolean) => {
         set(state => {
-          const seats = [...state.seats];
-          state.selectedSeats.map(id => {
-            let selectedSeat = seats.find(seat => seat.id === id);
-            if (selectedSeat) selectedSeat.status = "available";
-          });
-          return { ...state, seats, selectedSeats: [] };
+          if (removeSelectedOnly != undefined && removeSelectedOnly) {
+            return { ...state, selectedSeats: [] };
+          } else {
+            const seats = [...state.seats];
+            state.selectedSeats.map(id => {
+              let selectedSeat = seats.find(seat => seat.id === id);
+              if (selectedSeat) selectedSeat.status = "available";
+            });
+            return { ...state, seats, selectedSeats: [] };
+          }
         });
       },
       bookSeat: seatId => {

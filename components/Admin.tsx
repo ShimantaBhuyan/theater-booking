@@ -18,14 +18,14 @@ export const Admin = () => {
     const insertLayoutResult = await supabase.upsert("rows", cinemaLayout.rows);
     const insertSeatsResult = await supabase.upsert("seat", seats);
     if (insertLayoutResult.status) {
-      console.log("CINEMA LAYOUT DATA UPDATED SUCCESSFULLY: ", insertLayoutResult);
+      alert("CINEMA LAYOUT DATA UPDATED SUCCESSFULLY");
     } else {
-      console.log("CINEMA LAYOUT DATA UPDATE FAILED: ", insertLayoutResult);
+      alert("CINEMA LAYOUT DATA UPDATE FAILED");
     }
     if (insertSeatsResult.status) {
-      console.log("SEATS DATA UPDATED SUCCESSFULLY: ", insertSeatsResult);
+      alert("SEATS DATA UPDATED SUCCESSFULLY");
     } else {
-      console.log("SEATS DATA UPDATE FAILED: ", insertSeatsResult);
+      alert("SEATS DATA UPDATE FAILED");
     }
   };
 

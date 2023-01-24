@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 
 export class SBClient {
   private static instance: SBClient;
@@ -70,5 +71,24 @@ export class SBClient {
       console.error(error);
       return { success: false, message: "Error while updating data" };
     }
+  };
+
+  public getRealtimeSeats = () => {
+    const [realtimeSeats, setRealtimeSeats] = useState<any>(null);
+
+    const getRealtime = async () => {
+      this.supabase
+        .channel("public:seat")
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "seat" }, payload => {
+          setRealtimeSeats(payload.new);
+        })
+        .subscribe();
+    };
+
+    useEffect(() => {
+      getRealtime();
+    });
+
+    return realtimeSeats;
   };
 }

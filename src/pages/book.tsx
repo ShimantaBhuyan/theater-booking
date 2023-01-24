@@ -2,16 +2,50 @@ import { BookingSummary } from "@components/BookingSummary";
 import SeatLayout from "@components/SeatLayout";
 import { SeatLegend } from "@components/SeatLegend";
 import { Timer } from "@components/Timer";
-import { useSeatStore } from "@store/store";
+import { Seat, useSeatStore } from "@store/store";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { SBClient } from "utils/SBClient";
 import useSessionTimer from "utils/useTimer";
 
 const BookScreen = () => {
   const router = useRouter();
-  const { selectedSeats } = useSeatStore();
-  const { isRunning, countdownTime, timeLeft, stop } = useSessionTimer();
+  const { selectedSeats, bookSeat, setCinemaLayout, setSeats } = useSeatStore();
+  const { timeLeft, stop } = useSessionTimer();
   const { deselectAll } = useSeatStore();
+
+  const supabase = SBClient.getInstance();
+  let realtimeSeats = supabase.getRealtimeSeats();
+
+  useEffect(() => {
+    const getDBValues = async () => {
+      const rowsData = await supabase.fetchRows();
+      const seatsData = await supabase.fetchSeats();
+      // TODO: Toasts
+      if (rowsData.success) {
+        setCinemaLayout({ rows: rowsData.data?.data as Array<{ id: string; numCols: number; price: number }> });
+      } else {
+        alert("Failed to load cinema layout...");
+      }
+      if (seatsData.success) {
+        setSeats(seatsData.data?.data as Seat[]);
+      } else {
+        alert("Failed to load seats for cinema...");
+      }
+    };
+    // if (seats && seats.length === 0) getDBValues();
+    getDBValues();
+  }, []);
+
+  useEffect(() => {
+    if (realtimeSeats != undefined && selectedSeats.some(seat => seat === realtimeSeats.id)) {
+      // TODO: Toast message
+      bookSeat(realtimeSeats.id);
+      deselectAll();
+      stop();
+      alert("One or more of your selected seats has been booked! Chose other seats and try again.");
+    }
+  }, [realtimeSeats]);
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -24,12 +58,6 @@ const BookScreen = () => {
       stop();
     }
   }, [selectedSeats.length]);
-
-  // useEffect(() => {
-  //   if (isRunning) {
-  //     setLeftTime(countdownTime);
-  //   }
-  // }, [isRunning]);
 
   return (
     <div className="flex flex-col justify-center items-center gap-10">
