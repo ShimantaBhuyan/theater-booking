@@ -39,7 +39,10 @@ const BookScreen = () => {
 
   // TODO: Fix realtime sync issues
   useEffect(() => {
-    if (realtimeSeats != undefined /* && selectedSeats.some(seat => seat === realtimeSeats.id) */) {
+    const isSelectedSeatsBooked = selectedSeats.some(seat =>
+      seats.find(_seat => _seat.id === seat && _seat.status === "booked"),
+    );
+    if (realtimeSeats != undefined || isSelectedSeatsBooked) {
       // TODO: Toast message
       deselectAll(true);
       bookSeat(realtimeSeats.id);
