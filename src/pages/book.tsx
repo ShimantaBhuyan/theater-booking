@@ -10,7 +10,7 @@ import useSessionTimer from "utils/useTimer";
 
 const BookScreen = () => {
   const router = useRouter();
-  const { selectedSeats, bookSeat, setCinemaLayout, setSeats } = useSeatStore();
+  const { selectedSeats, bookSeat, setCinemaLayout, setSeats, seats } = useSeatStore();
   const { timeLeft, stop } = useSessionTimer();
   const { deselectAll } = useSeatStore();
 
@@ -37,11 +37,12 @@ const BookScreen = () => {
     getDBValues();
   }, []);
 
+  // TODO: Fix realtime sync issues
   useEffect(() => {
-    if (realtimeSeats != undefined && selectedSeats.some(seat => seat === realtimeSeats.id)) {
+    if (realtimeSeats != undefined /* && selectedSeats.some(seat => seat === realtimeSeats.id) */) {
       // TODO: Toast message
+      deselectAll(true);
       bookSeat(realtimeSeats.id);
-      deselectAll();
       stop();
       alert("One or more of your selected seats has been booked! Chose other seats and try again.");
     }
@@ -57,6 +58,9 @@ const BookScreen = () => {
     if (selectedSeats.length === 0) {
       stop();
     }
+    // if(selectedSeats.length > 0 && seats.some(seat => selectedSeats.findIndex(selected => seat.status === "booked" && seat.id === selected)) {
+
+    // }
   }, [selectedSeats.length]);
 
   return (
