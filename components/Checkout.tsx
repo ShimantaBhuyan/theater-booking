@@ -49,7 +49,7 @@ const Checkout = () => {
     } else {
       alert("SEAT BOOKING FAILED");
     }
-    deselectAll();
+    deselectAll(true);
     stop();
     // TODO: Show booking confirmation toast
     alert("Your seats have been booked successfully!");
