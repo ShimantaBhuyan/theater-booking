@@ -10,7 +10,9 @@ import useSessionTimer from "utils/useTimer";
 
 const BookScreen = () => {
   const router = useRouter();
-  const { selectedSeats, bookSeat, setCinemaLayout, setSeats, seats } = useSeatStore();
+  const selectedSeats = useSeatStore(state => state.selectedSeats);
+  const seats = useSeatStore(state => state.seats);
+  const { bookSeat, setCinemaLayout, setSeats } = useSeatStore();
   const { timeLeft, stop } = useSessionTimer();
   const { deselectAll } = useSeatStore();
 
@@ -21,7 +23,6 @@ const BookScreen = () => {
     const getDBValues = async () => {
       const rowsData = await supabase.fetchRows();
       const seatsData = await supabase.fetchSeats();
-      // TODO: Toasts
       if (rowsData.success) {
         setCinemaLayout({ rows: rowsData.data?.data as Array<{ id: string; numCols: number; price: number }> });
       } else {
@@ -33,23 +34,28 @@ const BookScreen = () => {
         alert("Failed to load seats for cinema...");
       }
     };
-    // if (seats && seats.length === 0) getDBValues();
     getDBValues();
   }, []);
 
-  // TODO: Fix realtime sync issues
   useEffect(() => {
-    const isSelectedSeatsBooked = selectedSeats.some(seat =>
-      seats.find(_seat => _seat.id === seat && _seat.status === "booked"),
-    );
-    if (realtimeSeats != undefined || isSelectedSeatsBooked) {
-      // TODO: Toast message
+    if (realtimeSeats != undefined) {
       deselectAll(true);
       bookSeat(realtimeSeats.id);
       stop();
       alert("One or more of your selected seats has been booked! Chose other seats and try again.");
     }
   }, [realtimeSeats]);
+
+  useEffect(() => {
+    const isSelectedSeatsBooked = selectedSeats.some(seat =>
+      seats.find(_seat => _seat.id === seat && _seat.status === "booked"),
+    );
+    if (isSelectedSeatsBooked) {
+      deselectAll(true);
+      stop();
+      alert("One or more of your selected seats has been booked! Chose other seats and try again.");
+    }
+  }, [seats]);
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -61,9 +67,6 @@ const BookScreen = () => {
     if (selectedSeats.length === 0) {
       stop();
     }
-    // if(selectedSeats.length > 0 && seats.some(seat => selectedSeats.findIndex(selected => seat.status === "booked" && seat.id === selected)) {
-
-    // }
   }, [selectedSeats.length]);
 
   return (
