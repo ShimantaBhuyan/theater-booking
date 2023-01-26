@@ -14,7 +14,6 @@ export const Admin = () => {
   const supabase = SBClient.getInstance();
 
   const handleSubmit = async () => {
-    // TODO: Toast messages
     const insertLayoutResult = await supabase.upsert("rows", cinemaLayout.rows);
     const insertSeatsResult = await supabase.upsert("seat", seats);
     if (insertLayoutResult.status) {

@@ -63,8 +63,6 @@ const useSessionTimer = () => {
       stop();
       return;
     }
-
-    // localStorage.setItem("sessionTimer", timeLeft.toString());
   }, [isRunning, timeLeft]);
 
   const countdownTime = toMinutesAndSeconds(timeLeft);
