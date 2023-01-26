@@ -1,4 +1,4 @@
-import { CinemaLayout, useSeatStore } from "@store/store";
+import { CinemaLayout, Seat, useSeatStore } from "@store/store";
 import { useEffect, useState } from "react";
 import { getSeatLayout } from "utils/getSeatLayout";
 import { SBClient } from "../utils/SBClient";
@@ -8,20 +8,39 @@ import SeatLayout from "./SeatLayout";
 export const Admin = () => {
   const [status, setStatus] = useState("available");
   const [currentCinemaLayout, setCurrentCinemaLayout] = useState<CinemaLayout>({ rows: [] });
-  const { setCinemaLayout, cinemaLayout, seats, setSeats, reserveSeats, disableSeats, selectedSeats, deselectAll } =
-    useSeatStore();
+  const { setCinemaLayout, setSeats, reserveSeats, disableSeats } = useSeatStore();
+  const cinemaLayout = useSeatStore(state => state.cinemaLayout);
+  const seats = useSeatStore(state => state.seats);
 
   const supabase = SBClient.getInstance();
+
+  useEffect(() => {
+    const getDBValues = async () => {
+      const rowsData = await supabase.fetchRows();
+      const seatsData = await supabase.fetchSeats();
+      if (rowsData.success) {
+        setCinemaLayout({ rows: rowsData.data?.data as Array<{ id: string; numCols: number; price: number }> });
+      } else {
+        alert("Failed to load cinema layout...");
+      }
+      if (seatsData.success) {
+        setSeats(seatsData.data?.data as Seat[]);
+      } else {
+        alert("Failed to load seats for cinema...");
+      }
+    };
+    getDBValues();
+  }, []);
 
   const handleSubmit = async () => {
     const insertLayoutResult = await supabase.upsert("rows", cinemaLayout.rows);
     const insertSeatsResult = await supabase.upsert("seat", seats);
-    if (insertLayoutResult.status) {
+    if (insertLayoutResult.success) {
       alert("CINEMA LAYOUT DATA UPDATED SUCCESSFULLY");
     } else {
       alert("CINEMA LAYOUT DATA UPDATE FAILED");
     }
-    if (insertSeatsResult.status) {
+    if (insertSeatsResult.success) {
       alert("SEATS DATA UPDATED SUCCESSFULLY");
     } else {
       alert("SEATS DATA UPDATE FAILED");
@@ -30,11 +49,10 @@ export const Admin = () => {
 
   const handleUpdate = () => {
     if (status === "reserved") {
-      reserveSeats(selectedSeats);
+      reserveSeats();
     } else if (status === "disabled") {
-      disableSeats(selectedSeats);
+      disableSeats();
     }
-    deselectAll();
   };
 
   const handleStatusChange = (e: any) => {
@@ -43,16 +61,14 @@ export const Admin = () => {
 
   const generateCinema = (rows: Array<{ id: string; numCols: number; price: number }>) => {
     setCinemaLayout({ rows });
+    setSeats(getSeatLayout({ rows }, true));
   };
 
   useEffect(() => {
-    if (cinemaLayout.rows.length > 0 && seats.length < 0) {
-      setSeats(getSeatLayout(cinemaLayout, true));
+    console.log({ cinemaLayout });
+    if (cinemaLayout.rows.length > 0) {
+      setCurrentCinemaLayout(cinemaLayout);
     }
-  }, [cinemaLayout, seats]);
-
-  useEffect(() => {
-    setCurrentCinemaLayout(cinemaLayout);
   }, [cinemaLayout]);
 
   return (
