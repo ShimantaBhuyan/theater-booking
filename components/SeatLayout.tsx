@@ -4,7 +4,9 @@ import { useSeatStore, dummyCinemaLayout, Seat as SeatProps } from "@store/store
 import { getSeatLayout } from "utils/getSeatLayout";
 
 const SeatLayout: React.FC = () => {
-  const { cinemaLayout, toggleSeat, seats } = useSeatStore();
+  const { toggleSeat } = useSeatStore();
+  const cinemaLayout = useSeatStore(state => state.cinemaLayout);
+  const seats = useSeatStore(state => state.seats);
   const [rows, setRows] = useState<{ [rowId: string]: SeatProps[] }>({});
   const [seatPrices, setSeatPrices] = useState<string[]>([]);
 

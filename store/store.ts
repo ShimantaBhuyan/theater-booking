@@ -9,8 +9,8 @@ interface SelectionStore {
   setSeats: (seats: Seat[]) => void;
   toggleSeat: (seatId: string) => void;
   bookSeat: (seatId: string) => void;
-  reserveSeats: (seatId: string[]) => void;
-  disableSeats: (seatId: string[]) => void;
+  reserveSeats: () => void;
+  disableSeats: () => void;
   setCinemaLayout: (layout: CinemaLayout) => void;
 }
 
@@ -85,24 +85,30 @@ export const useSeatStore = create<SelectionStore>()(
           return { ...state, seats, selectedSeats: state.selectedSeats.filter(id => id !== seatId) };
         });
       },
-      reserveSeats: seatIds => {
+      reserveSeats: () => {
         set(state => {
           let seats = [...state.seats];
-          const selectedSeats = seatIds.map((seatId: string) => seats.find(seat => seat.id === seatId)) as Seat[];
-          if (!selectedSeats.length) return state;
-          selectedSeats.forEach(seat => seat != undefined && (seat.status = "reserved"));
-          seats = [...state.seats];
-          return { ...state, seats };
+          const selectedSeats = state.selectedSeats.map((seatId: string) =>
+            seats.find(seat => seat.id === seatId),
+          ) as Seat[];
+          if (selectedSeats && selectedSeats.length === 0) return state;
+          selectedSeats.forEach(seat => {
+            if (seat != undefined) seat.status = "reserved";
+          });
+          return { ...state, seats, selectedSeats: [] };
         });
       },
-      disableSeats: seatIds => {
+      disableSeats: () => {
         set(state => {
           let seats = [...state.seats];
-          const selectedSeats = seatIds.map((seatId: string) => seats.find(seat => seat.id === seatId)) as Seat[];
+          const selectedSeats = state.selectedSeats.map((seatId: string) =>
+            seats.find(seat => seat.id === seatId),
+          ) as Seat[];
           if (!selectedSeats.length) return state;
-          selectedSeats.forEach(seat => seat != undefined && (seat.status = "disabled"));
-          seats = [...state.seats];
-          return { ...state, seats };
+          selectedSeats.forEach(seat => {
+            if (seat != undefined) seat.status = "disabled";
+          });
+          return { ...state, seats, selectedSeats: [] };
         });
       },
       setCinemaLayout: (cinemaLayout: CinemaLayout) => {
