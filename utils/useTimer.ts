@@ -15,10 +15,10 @@ const useTimer = create<ITimer>()(
     set => {
       return {
         isRunning: false,
-        timeLeft: 20,
+        timeLeft: 300,
         start: () =>
           set((state: any) => {
-            return { ...state, timeLeft: 20, isRunning: true };
+            return { ...state, timeLeft: 300, isRunning: true };
           }),
         stop: () =>
           set((state: any) => {
