@@ -73,6 +73,19 @@ export class SBClient {
     }
   };
 
+  public delete = async (tableName: string): Promise<any> => {
+    try {
+      const deleteData = await this.supabase.from(tableName).delete().gte("id", 1);
+      if (deleteData.status === 200 || deleteData.status === 201 || deleteData.status === 204) {
+        return { success: true, message: "Table deleted successfully", data: deleteData };
+      }
+      return { success: false, message: "Error while deleting table", data: deleteData };
+    } catch (error) {
+      console.error(error);
+      return { success: false, message: `Error while deleting table: ${error}` };
+    }
+  };
+
   public getRealtimeSeats = () => {
     const [realtimeSeats, setRealtimeSeats] = useState<any>(null);
 

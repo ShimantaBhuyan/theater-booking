@@ -33,17 +33,27 @@ export const Admin = () => {
   }, []);
 
   const handleSubmit = async () => {
-    const insertLayoutResult = await supabase.upsert("rows", cinemaLayout.rows);
-    const insertSeatsResult = await supabase.upsert("seat", seats);
-    if (insertLayoutResult.success) {
-      alert("CINEMA LAYOUT DATA UPDATED SUCCESSFULLY");
+    const deleteCinemaTableResult = await supabase.delete("rows");
+    const deleteSeatTableResult = await supabase.delete("seat");
+    if (deleteCinemaTableResult.success) {
+      if (deleteSeatTableResult.success) {
+        const insertLayoutResult = await supabase.upsert("rows", cinemaLayout.rows);
+        const insertSeatsResult = await supabase.upsert("seat", seats);
+        if (insertLayoutResult.success) {
+          alert("CINEMA LAYOUT DATA UPDATED SUCCESSFULLY");
+        } else {
+          alert("CINEMA LAYOUT DATA UPDATE FAILED");
+        }
+        if (insertSeatsResult.success) {
+          alert("SEATS DATA UPDATED SUCCESSFULLY");
+        } else {
+          alert("SEATS DATA UPDATE FAILED");
+        }
+      } else {
+        alert("SEAT LAYOUT DELETION FAILED");
+      }
     } else {
-      alert("CINEMA LAYOUT DATA UPDATE FAILED");
-    }
-    if (insertSeatsResult.success) {
-      alert("SEATS DATA UPDATED SUCCESSFULLY");
-    } else {
-      alert("SEATS DATA UPDATE FAILED");
+      alert("CINEMA LAYOUT DELETION FAILED");
     }
   };
 
