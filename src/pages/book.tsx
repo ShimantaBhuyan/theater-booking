@@ -39,10 +39,14 @@ const BookScreen = () => {
 
   useEffect(() => {
     if (realtimeSeats != undefined) {
-      deselectAll(true);
-      bookSeat(realtimeSeats.id);
-      stop();
-      alert("One or more of your selected seats has been booked! Chose other seats and try again.");
+      // find if any seat in selectedSeats is present in realtimeSeats
+      const selectedSeatsPresent = selectedSeats.some(seat => realtimeSeats.id === seat);
+      if (selectedSeatsPresent) {
+        deselectAll(true);
+        bookSeat(realtimeSeats.id);
+        stop();
+        alert("One or more of your selected seats has been booked! Chose other seats and try again.");
+      }
     }
   }, [realtimeSeats]);
 

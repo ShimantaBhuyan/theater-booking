@@ -1,6 +1,6 @@
 import { BookingSummary } from "@components/BookingSummary";
 import { Timer } from "@components/Timer";
-import { useSeatStore } from "@store/store";
+import { Seat, useSeatStore } from "@store/store";
 import Link from "next/link";
 import { useEffect } from "react";
 import { SBClient } from "utils/SBClient";
@@ -23,10 +23,14 @@ const Checkout = () => {
 
   useEffect(() => {
     if (realtimeSeats != undefined) {
-      deselectAll(true);
-      bookSeat(realtimeSeats.id);
-      stop();
-      alert("One or more of your selected seats has been booked! Chose other seats and try again.");
+      // find if any seat in selectedSeats is present in realtimeSeats
+      const selectedSeatsPresent = selectedSeats.some(seat => realtimeSeats.id === seat);
+      if (selectedSeatsPresent) {
+        deselectAll(true);
+        bookSeat(realtimeSeats.id);
+        stop();
+        alert("One or more of your selected seats has been booked! Chose other seats and try again.");
+      }
     }
   }, [realtimeSeats]);
 
